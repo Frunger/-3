@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.gench.javaee.fengjingxuan2220680.mapper.FlightMapper">
+    <select id="queryFlightsByConditions" parameterType="map" resultMap="flightResultMap">
+        SELECT f.*, da.airport_name AS departure_airport_name, da.city AS departure_city,
+               aa.airport_name AS arrival_airport_name, aa.city AS arrival_city
+        FROM flights f
+                 JOIN airports da ON f.departure_airport_code = da.airport_code
+                 JOIN airports aa ON f.arrival_airport_code = aa.airport_code
+        WHERE (f.departure_airport_code = #{departureAirportCode} OR #{departureAirportCode} IS NULL)
+          AND (f.arrival_airport_code = #{arrivalAirportCode} OR #{arrivalAirportCode} IS NULL)
+    </select>
+
+    <resultMap id="flightResultMap" type="cn.edu.gench.javaee.fengjingxuan2220680.pojo.Flight">
+        <id property="id" column="id"/>
+        <result property="flightNumber" column="flight_number"/>
+        <result property="flightDuration" column="flight_duration"/>
+        <result property="ticketPrice" column="ticket_price"/>
+        <association property="departureAirport" javaType="cn.edu.gench.javaee.fengjingxuan2220680.pojo.Airport">
+            <result property="airportName" column="departure_airport_name"/>
+            <result property="city" column="departure_city"/>
+        </association>
+        <association property="arrivalAirport" javaType="cn.edu.gench.javaee.fengjingxuan2220680.pojo.Airport">
+            <result property="airportName" column="arrival_airport_name"/>
+            <result property="city" column="arrival_city"/>
+        </association>
+    </resultMap>
+</mapper>
